@@ -1,0 +1,94 @@
+# template for "Stopwatch: The Game"
+import simplegui
+import math
+import time
+# define global variables
+frame_width = 350
+frame_height = 250
+interval = 100
+mins = 0
+secs = 0
+secondths = 0
+t = 0
+tenths = 0
+num_of_wins = 0
+games_played = 0
+check_button = 0
+
+
+# define helper function format that converts time
+# in tenths of seconds into formatted string A:BC.D
+def format(tenths):
+    mins = tenths // 600
+    mins = str(mins)
+    t = (tenths % 10)  
+    
+    secs = (tenths / 10) % 60 
+   
+    if secs < 10:
+        secs = "0"+str(secs)
+        
+        
+    else:
+        secs = str((tenths / 10) % 60)
+       
+    return str(mins)+":"+secs+"."+str(t) 
+    #return str(num_of_wins)+"/"+str(games_played)
+    
+    
+    
+# define event handlers for buttons; "Start", "Stop", "Reset"
+def start():
+    global check_button
+    timer.start()
+    check_button = True
+
+def stop():
+    global num_of_wins, games_played, check_button, t
+    #timer.stop
+    if timer.is_running():
+        games_played += 1
+        if tenths % 10 == 0:
+            num_of_wins += 1
+    timer.stop()    
+        
+            
+    
+def reset():
+    global num_of_wins, games_played, mins, secs, t, tenths
+    timer.stop()
+    num_of_wins = 0
+    games_played = 0
+    mins = 0
+    secs = 0
+    t = 0
+    tenths = 0
+    
+
+# define event handler for timer with 0.1 sec interval
+def tick():
+    global tenths
+    tenths += 1
+
+    
+
+# define draw handler
+def draw(canvas):
+    canvas.draw_text(format(tenths), (110,150),50,"Red")
+    canvas.draw_text("Games:" + str(num_of_wins) + "/" + str(games_played), (87,70), 40, "Red")
+    
+
+# create frame
+frame = simplegui.create_frame("Stopwatch: The Game", frame_width, frame_height)
+
+
+# register event handlers
+frame.add_button("Start", start, 150)
+frame.add_button("Stop", stop, 150)
+frame.add_button("Reset", reset, 150)
+timer = simplegui.create_timer(interval, tick)
+frame.set_draw_handler(draw)
+
+
+# start frame
+frame.start()
